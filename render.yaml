@@ -1,0 +1,26 @@
+# Render Blueprint — deploys this repository as a static site.
+#
+# Why: the failure `Could not read package.json` happened because Render ran the
+# default Node build (`npm install && npm run build`) against a repository that had
+# no package.json at all. The app is now a real Vite project, so Render can build it.
+#
+# In the Render dashboard: New + → Blueprint → pick this repo, or create a
+# Static Site manually with Build Command `npm install && npm run build` and
+# Publish Directory `dist`. Leave "Root Directory" empty.
+services:
+  - type: web
+    name: up-tender-deployment-console
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable

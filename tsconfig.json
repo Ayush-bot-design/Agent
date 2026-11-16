@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "types": ["vite/client", "node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/server",
+    "src/**/*.test.ts",
+    // Legacy modules whose server-side companions (server.ts, src/lib/*, Express
+    // routes) were never uploaded. They stay in the tree for the future server
+    // build but are not part of the static console bundle.
+    "src/utils/face-recognition-engine.ts",
+    "src/utils/facial-verification.ts",
+    "src/utils/security-validation.ts",
+    "src/utils/destructive-action-helpers.ts"
+  ]
+}

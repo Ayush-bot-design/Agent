@@ -1,0 +1,21 @@
+{
+  "name": "UP Tender Deployment Console",
+  "short_name": "UP Tender",
+  "description": "Agent workspace for Uttar Pradesh tender software deployment.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#e2e8f0",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    {
+      "src": "/app-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    { "src": "/app-icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

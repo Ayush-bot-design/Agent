@@ -1,0 +1,577 @@
+/* Agent-only presentation. Admin/theme, protected dialogs and workflow state
+   remain owned by their existing components. No per-card blur or sticky header. */
+.user-panel {
+  --agent-ink: #1d1d1f;
+  --agent-muted: #6e6e73;
+  --agent-line: #e5e5ea;
+  --agent-green: #009b72;
+  --agent-amber: #b76519;
+  padding-top: max(20px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  color: var(--agent-ink);
+}
+.user-panel .agent-header {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  min-width: 0;
+  padding: 0 0 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transform: none;
+}
+.agent-identity {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+}
+.agent-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-top: 3px;
+  border-radius: 12px;
+  background: #1d1d1f;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+.agent-identity-copy {
+  min-width: 0;
+}
+.agent-identity-copy h1 {
+  font-size: 21px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+.agent-identifier,
+.agent-location,
+.agent-serial {
+  display: block;
+  margin-top: 3px;
+  color: var(--agent-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.agent-identifier {
+  color: #515156;
+  font-variant-numeric: tabular-nums;
+}
+.agent-serial {
+  font-size: 11px;
+}
+.agent-duty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 2px 0 4px;
+  color: #57575d;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.agent-duty > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8e8e93;
+}
+.agent-duty[data-on-duty='true'] {
+  color: #087752;
+}
+.agent-duty[data-on-duty='true'] > span {
+  background: var(--agent-green);
+}
+.agent-toolbar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 44px 44px;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding-bottom: 8px;
+}
+.agent-toolbar :is(button, a) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 4px;
+  border-radius: 10px;
+  color: #414147;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+}
+.agent-toolbar svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke-width: 1.75;
+  color: #6e6e73;
+}
+.agent-icon-action > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.agent-toolbar .agent-signout {
+  color: var(--agent-muted);
+}
+.agent-toolbar .agent-admin-switch {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+.agent-navigation {
+  margin-top: 4px;
+}
+.agent-segments {
+  min-width: 0;
+  border: 1px solid rgb(0 0 0 / 3%);
+  border-radius: 999px;
+  background: #e9e9ed;
+}
+.agent-segments > button {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 6px 2px;
+  border-radius: 999px;
+  color: #6e6e73;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.agent-segments > button[aria-pressed='true'] {
+  color: #1d1d1f;
+  font-weight: 600;
+}
+.user-panel .agent-segments .motion-active-pill {
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 9%);
+}
+/* Opaque operational information, not another glass panel. Specificity matches
+   the shared material so no !important/theme-wide reset is necessary. */
+.user-panel .agent-active {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--agent-line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 2%);
+}
+.agent-active-copy {
+  min-width: 0;
+}
+.agent-eyebrow {
+  margin-bottom: 5px;
+  color: var(--agent-amber);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.agent-active h2 {
+  color: #1d1d1f;
+  font-size: 19px;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+}
+.agent-active-description {
+  margin-top: 5px;
+  color: var(--agent-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.agent-countdown {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin-top: 6px;
+  color: var(--agent-amber);
+  font-size: 12px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+.agent-countdown svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.agent-active-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.agent-active-actions :is(a, button) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+}
+.agent-active-actions .agent-action-primary {
+  grid-column: 1 / -1;
+  background: #008663;
+  color: #fff;
+  font-size: 13px;
+}
+.agent-active-actions .agent-action-review {
+  background: #252529;
+  color: #fff;
+}
+.agent-active-actions .agent-action-pause {
+  border: 1px solid #dedee3;
+  background: #fff;
+  color: #515156;
+}
+.agent-discovery {
+  min-width: 0;
+  padding-top: 4px;
+}
+.agent-browse-heading h2 {
+  color: #1d1d1f;
+  font-size: 21px;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+}
+.agent-browse-heading p {
+  margin-top: 4px;
+  color: var(--agent-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.agent-select {
+  position: relative;
+  min-width: 0;
+}
+.agent-select > select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 32px 10px 12px;
+  border: 1px solid #dcdce1;
+  border-radius: 11px;
+  background: #fff;
+  color: #343439;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+}
+.agent-select > svg {
+  position: absolute;
+  top: calc(50% - 8px);
+  right: 11px;
+  color: #8e8e93;
+  pointer-events: none;
+}
+.agent-district-select {
+  margin-top: 12px;
+}
+.agent-filter-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.agent-search {
+  position: relative;
+  min-width: 0;
+}
+.agent-search > svg {
+  position: absolute;
+  top: calc(50% - 8.5px);
+  left: 12px;
+  color: #8e8e93;
+  pointer-events: none;
+}
+.agent-search > input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 42px 10px 37px;
+  border: 1px solid #dcdce1;
+  border-radius: 11px;
+  outline-offset: 2px;
+  background: #fff;
+  color: #1d1d1f;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.agent-search > input::placeholder {
+  color: #85858b;
+}
+.agent-search input::-webkit-search-cancel-button {
+  appearance: none;
+}
+.agent-search > button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  color: #6e6e73;
+}
+.agent-directory-count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 6px;
+  row-gap: 3px;
+  margin-top: 10px;
+  color: #6e6e73;
+  font-size: 12px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.agent-directory-count strong {
+  color: #515156;
+  font-weight: 600;
+}
+.user-panel .agent-directory .liquid-glass,
+.user-panel .agent-site-list > button {
+  border: 1px solid #e5e5ea;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 2%);
+}
+.agent-site-title,
+.agent-site-assignment,
+.agent-site-assignment > div {
+  flex-wrap: wrap;
+}
+.agent-site-assignment .liquid-pill {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.user-panel .agent-site-locked {
+  color: #6e6e73;
+}
+.agent-site-list h3 {
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.agent-site-list .liquid-pill.font-mono {
+  border-color: transparent;
+  background: #f0f0f3;
+  box-shadow: none;
+}
+.user-panel
+  :is(.agent-header, .agent-directory)
+  :is(button, a, summary, input, select):focus-visible {
+  outline: 2px solid #515156;
+  outline-offset: -3px;
+}
+.agent-header :is(button, a):disabled,
+.agent-directory button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+@media (min-width: 380px) {
+  .agent-filter-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .agent-search {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 640px) {
+  .agent-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-left: 48px;
+  }
+  .agent-toolbar :is(button, a) {
+    gap: 6px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+  .agent-icon-action > span {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    overflow: visible;
+  }
+  .agent-toolbar .agent-signout {
+    margin-left: auto;
+  }
+  .agent-segments > button {
+    font-size: 13px;
+  }
+  .agent-active-actions {
+    grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 1fr));
+  }
+  .agent-active-actions .agent-action-primary {
+    grid-column: auto;
+  }
+  .agent-browse-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.9fr);
+    gap: 24px;
+    align-items: center;
+  }
+  .agent-district-select {
+    margin-top: 0;
+  }
+  .agent-filter-toolbar {
+    margin-top: 16px;
+    grid-template-columns: minmax(0, 1.45fr) repeat(2, minmax(0, 1fr));
+  }
+  .agent-search {
+    grid-column: auto;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .agent-toolbar :is(button, a):hover {
+    background: #eaeaec;
+  }
+  .agent-toolbar .agent-signout:hover {
+    color: #b42328;
+  }
+  .agent-action-primary:hover {
+    opacity: 0.94;
+  }
+}
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .agent-segments {
+    background: #e9e9ed;
+  }
+}
+@media print {
+  .agent-toolbar,
+  .agent-navigation {
+    display: none;
+  }
+  .user-panel .agent-header {
+    position: static;
+  }
+}
+
+/* Pending is an operational state, not another neutral directory surface. */
+.user-panel .agent-directory .agent-pending {
+  border: 1px solid #e9cc9d;
+  background: #fffaf1;
+  box-shadow: 0 2px 6px rgb(110 65 13 / 3%);
+}
+.agent-pending-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #71400f;
+}
+.agent-pending-count {
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #f8e6c7;
+  color: #71400f;
+  font-size: 11px;
+  font-weight: 600;
+}
+.user-panel .agent-directory .agent-pending-card {
+  border: 1px solid #ecd9b9;
+  border-inline-start: 3px solid #b76519;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: none;
+  overflow-wrap: anywhere;
+}
+.user-panel .agent-site-list > button[data-site-status='pending'] {
+  border-color: #e9cc9d;
+  border-inline-start: 3px solid #b76519;
+  background: #fffaf1;
+}
+
+/* Infinite scroll: the next cursor page is read as the end of the list approaches, so the list
+   never waits behind a manual "load more" tap. The button survives only as a no-observer fallback. */
+.agent-infinite-scroll {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 4px 0;
+  color: #8e8e93;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+.agent-infinite-scroll svg {
+  flex-shrink: 0;
+}
+.agent-infinite-scroll-hint {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.user-panel .agent-infinite-scroll-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #dedee3;
+  border-radius: 12px;
+  background: #fff;
+  color: #1d1d1f;
+  font-size: 13px;
+  font-weight: 600;
+}
+.user-panel .agent-infinite-scroll-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}

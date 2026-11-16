@@ -1,0 +1,68 @@
+/* Proof records must be legible over the directory. Override the shared alpha
+   material only for this panel; retain its rims, radius and entrance animation. */
+:root .site-detail-panel {
+  background: #fff;
+  color: #1d1d1f;
+}
+.site-detail-header {
+  background: #fff;
+}
+/* iOS grouped-list canvas: white header and cards on a soft grey page. */
+.site-detail-body {
+  background: #f7f7f9;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+.site-detail-panel {
+  border-radius: 28px;
+}
+.site-detail-header h3 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.site-detail-metadata {
+  flex-wrap: wrap;
+}
+.site-detail-header button {
+  min-height: 44px;
+}
+.site-detail-header button[aria-label='Close site details modal'] {
+  min-width: 44px;
+  color: #6e6e73;
+}
+.site-detail-body h4,
+.site-detail-body dt {
+  color: #6e6e73;
+}
+.site-detail-body dl {
+  border-color: #d2d2d7;
+}
+.site-detail-body dl > div {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.8fr) minmax(0, 1.6fr);
+  align-items: start;
+  gap: 8px 16px;
+  border-color: #e5e5ea;
+}
+.site-detail-body dd {
+  min-width: 0;
+  max-width: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.site-detail-body dd.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+.site-detail-body dd a {
+  display: inline-flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+@media (max-width: 479px) {
+  .site-detail-body dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .site-detail-body dd {
+    text-align: start;
+  }
+}

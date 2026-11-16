@@ -1,0 +1,249 @@
+/* Alpha-blended glass on a cool-slate canvas; no per-card backdrop sampling. */
+:root {
+  --liquid-glass-fill: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 255, 255, 0.36) 55%,
+    rgba(248, 250, 252, 0.46) 100%
+  );
+  --liquid-glass-shadow:
+    0 12px 32px -6px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03),
+    inset 0 1.5px 1px rgba(255, 255, 255, 1), inset 0 -2px 6px rgba(148, 163, 184, 0.12);
+  --liquid-glass-interaction: 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root
+  :is(
+    .glass-panel,
+    .ios-glass-card,
+    .glass-panel-subtle,
+    .glass-modal,
+    .motion-dialog-panel,
+    .liquid-glass,
+    .user-panel-header,
+    .completed-card,
+    .completed-metrics,
+    .completed-filters,
+    .wizard-header,
+    .wizard-content,
+    .wizard-footer,
+    .motion-popover
+  ):not(:where([data-motion-protected], [data-motion-protected] *)) {
+  background: var(--liquid-glass-fill);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.98);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-right: 1px solid rgba(148, 163, 184, 0.35);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 24px;
+  box-shadow: var(--liquid-glass-shadow);
+}
+
+/* Override legacy helpers AND Tailwind backdrop utilities, including nested
+   inputs/tracks and portal panels. Only the explicit floating allowlist below
+   gets blur. No translateZ/will-change promotion on repeating surfaces. */
+:root
+  :is(
+    .glass-panel,
+    .ios-glass-card,
+    .glass-panel-subtle,
+    .glass-modal,
+    .glass-input,
+    .liquid-glass,
+    .liquid-pill,
+    .liquid-scroll-card,
+    .ios-tab-track,
+    .ios-tab-active,
+    .completed-segments,
+    .completed-card,
+    .completed-filters,
+    .completed-metrics,
+    .completed-total,
+    .completed-date-chip,
+    .wizard-header,
+    .wizard-content,
+    .wizard-footer,
+    .motion-dialog-panel,
+    .motion-popover,
+    .motion-dialog-backdrop,
+    .user-panel-header,
+    [class*='backdrop-blur']
+  ) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.installation-wizard {
+  background: transparent;
+  gap: 12px;
+}
+:root :is(.ios-tab-track, .completed-segments) {
+  background: rgba(241, 245, 249, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 6px rgba(15, 23, 42, 0.03);
+}
+:root
+  :is(
+    .liquid-pill,
+    .ios-tab-active,
+    .completed-total,
+    .completed-date-chip:not([aria-pressed='true'])
+  ):not(:where([data-motion-protected], [data-motion-protected] *)) {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 11px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 5px rgba(15, 23, 42, 0.035);
+}
+/* A little more luminance identifies selection; the spring indicator still
+   animates the same persistent DOM. Dark selected date chips are not whitened. */
+:root .ios-tab-active {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Opt in only audited list-card surfaces, not their timeline frame, list wrapper
+   or page shell. No size containment/content-visibility: accordion height and
+   scroll anchors continue to follow the existing DOM normally. */
+.liquid-scroll-card {
+  contain: layout style paint;
+}
+.liquid-scroll-card:focus-visible,
+.liquid-scroll-card :is(button, a, summary, input, select, textarea):focus-visible {
+  outline-offset: -3px;
+}
+/* A future embedded viewport dialog/camera must never inherit paint clipping. */
+.liquid-scroll-card:has(
+  .fixed,
+  .sticky,
+  [aria-modal='true'],
+  [role='dialog'],
+  [data-motion-protected],
+  video,
+  [style*='position: fixed']
+) {
+  contain: none;
+}
+
+/* Utility transition-all/colors classes must not reintroduce paint animations.
+   Static sheen and shadows do not change on hover; only compositor properties do. */
+:root :is(.liquid-interactive, .liquid-scroll-card, .liquid-pill, .completed-date-chip),
+:root :where(.motion-app, .motion-dialog-panel) :is(button, a, summary, input, select, textarea) {
+  transition-property: transform, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  :root .liquid-interactive:not(:disabled):not([aria-disabled='true']):hover {
+    opacity: 0.97;
+  }
+}
+
+/* One promoted, viewport-sized layer per open overlay, not a blurred card and
+   backdrop for every nested panel. Existing modal mount/close lifetimes own it. */
+:root .motion-dialog-backdrop,
+:root .software-qr-overlay {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transform: translateZ(0);
+}
+/* Only desktop actually pins the account header. Phones keep the tall header
+   in normal flow, with no filter or persistent compositor promotion. */
+@media (min-width: 1024px) {
+  :root .user-panel-header {
+    position: sticky;
+    top: 1rem;
+    z-index: 30;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transform: translateZ(0);
+  }
+}
+/* Even an allowlisted float cannot establish a containing block around another
+   viewport-fixed overlay. Drop promotion/filter immediately, without a transition. */
+:root
+  :is(.motion-dialog-backdrop, .software-qr-overlay, .user-panel-header):has(
+    .fixed,
+    .software-qr-overlay,
+    .motion-dialog-backdrop,
+    [style*='position: fixed']
+  ) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transform: none;
+}
+
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  :root
+    :is(
+      .glass-panel,
+      .ios-glass-card,
+      .glass-panel-subtle,
+      .glass-modal,
+      .liquid-glass,
+      .user-panel-header,
+      .completed-card,
+      .completed-metrics,
+      .completed-filters,
+      .wizard-header,
+      .wizard-content,
+      .wizard-footer,
+      .motion-popover,
+      .ios-tab-track,
+      .completed-segments,
+      .liquid-pill,
+      .ios-tab-active,
+      .completed-total,
+      .completed-date-chip:not([aria-pressed='true'])
+    ) {
+    background: #fff !important;
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1;
+  }
+  :root :is(.motion-dialog-backdrop, .software-qr-overlay, .user-panel-header) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root :is(.liquid-interactive, .liquid-scroll-card, .liquid-pill, .completed-date-chip) {
+    transition: none !important;
+  }
+}
+@media print {
+  :root
+    :is(
+      .glass-panel,
+      .ios-glass-card,
+      .glass-panel-subtle,
+      .glass-modal,
+      .liquid-glass,
+      .user-panel-header,
+      .completed-card,
+      .completed-metrics,
+      .completed-filters,
+      .wizard-header,
+      .wizard-content,
+      .wizard-footer,
+      .motion-popover,
+      .liquid-pill,
+      .ios-tab-track,
+      .ios-tab-active
+    ) {
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  :root :is(.motion-dialog-backdrop, .software-qr-overlay, .user-panel-header) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    transform: none;
+  }
+  :root .user-panel-header {
+    position: static;
+  }
+  .liquid-scroll-card {
+    contain: none;
+  }
+}

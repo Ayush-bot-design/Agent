@@ -1,0 +1,202 @@
+/* Presentation only. Keep protected lifecycle, native prompts, video geometry,
+   scan feedback and explicit confirmation owned by FacialVerificationModal. */
+.biometric-dialog {
+  isolation: isolate;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #1d1d1f;
+  -webkit-font-smoothing: antialiased;
+}
+.biometric-scrim {
+  background: rgb(29 29 31 / 48%);
+}
+.biometric-dialog .biometric-panel {
+  z-index: 1;
+  max-width: 400px;
+  max-height: calc(100dvh - 24px);
+  padding: 20px;
+  border: 1px solid #e5e5ea;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 12%);
+  scrollbar-gutter: stable;
+}
+.biometric-panel > * + * {
+  margin-top: 16px;
+}
+.biometric-panel button {
+  min-height: 44px;
+}
+.biometric-header {
+  align-items: flex-start;
+}
+.biometric-header h2 {
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+.biometric-header p {
+  margin-top: 4px;
+  color: #6e6e73;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.biometric-header .biometric-header-icon {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 11px;
+  background: #eaf7f2;
+  color: #008663;
+  box-shadow: none;
+}
+.biometric-header > button {
+  width: 44px;
+  height: 44px;
+  margin: -6px -6px 0 0;
+  background: transparent;
+  color: #6e6e73;
+}
+.biometric-modes {
+  gap: 4px;
+  padding: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: #efeff2;
+}
+.biometric-modes > button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px;
+  border-radius: 999px;
+  color: #6e6e73;
+  font-weight: 550;
+  font-size: 12px;
+}
+.biometric-modes > button[aria-pressed='true'] {
+  background: #fff;
+  color: #1d1d1f;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 9%);
+}
+.biometric-panel :is(.biometric-identity, .biometric-location) {
+  border: 1px solid #e5e5ea;
+  border-radius: 14px;
+  background: #f8f8fa;
+}
+.biometric-identity {
+  gap: 8px;
+}
+.biometric-location {
+  color: #6e6e73;
+  line-height: 1.5;
+}
+.biometric-location button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  padding-inline: 8px;
+  background: #fff;
+  font-size: 11px;
+}
+.biometric-panel .biometric-sensor {
+  width: 152px;
+  height: 152px;
+  border: 1.5px solid #9cd8c4;
+  background: #eefaf5;
+  color: #008663;
+  box-shadow: none;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-shadow: 0 0 #0000;
+}
+.biometric-sensor > div:first-child {
+  border-width: 1px;
+  border-color: #a6d6c7;
+}
+.biometric-sensor svg {
+  width: 60px;
+  height: 60px;
+  color: #009b72;
+  filter: none;
+}
+.biometric-sensor span {
+  color: #087752;
+  font-size: 10px;
+}
+.biometric-panel .biometric-sensor[data-state='error'] {
+  border-color: #e6a6aa;
+  background: #fff4f4;
+}
+.biometric-sensor[data-state='error'] :is(svg, span) {
+  color: #b42328;
+}
+.biometric-status {
+  color: #515156;
+}
+.biometric-status > div:first-child {
+  line-height: 1.4;
+}
+.biometric-panel .biometric-success {
+  padding: 12px;
+  border: 1px solid #bfe6d6;
+  border-radius: 14px;
+  background: #effaf5;
+}
+.biometric-success > div:first-child {
+  flex-wrap: wrap;
+  gap: 8px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.biometric-success .biometric-seal {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: #487062;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.biometric-actions {
+  align-items: stretch;
+  gap: 8px;
+}
+.biometric-actions > button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.biometric-actions > button:last-child {
+  background: #008663;
+  color: #fff;
+}
+.biometric-panel :is(button, a):focus-visible {
+  outline: 2px solid #515156;
+  outline-offset: 2px;
+}
+@media (max-width: 399px) {
+  .biometric-header .biometric-header-icon {
+    display: none;
+  }
+}
+@media (max-width: 359px) {
+  .biometric-dialog .biometric-panel {
+    padding: 16px;
+  }
+  .biometric-header h2 {
+    font-size: 18px;
+  }
+  .biometric-actions > button {
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .biometric-scrim {
+    background: rgb(29 29 31 / 70%);
+  }
+}

@@ -1,0 +1,1229 @@
+@import 'tailwindcss';
+@import './styles/user-panel.css';
+@import './styles/liquid-glass.css';
+@import './styles/agent-workspace.css';
+@import './styles/agent-profile.css';
+@import './styles/technician-profile.css';
+@import './styles/biometric-dialog.css';
+@import './styles/site-detail.css';
+
+@layer base {
+  body {
+    font-family:
+      'Plus Jakarta Sans',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
+    /* Canvas is intentionally solid; glass gradients belong to components only. */
+    background-color: #e2e8f0;
+    background-image: none;
+    color: #111827;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+}
+
+/* Hardware GPU-Accelerated Apple iOS Glassmorphism utility helpers */
+.glass-panel,
+.ios-glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 12px 32px -4px rgba(15, 23, 42, 0.06),
+    0 4px 12px -2px rgba(15, 23, 42, 0.03),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.95);
+}
+
+.ios-tab-track {
+  background: rgba(203, 213, 225, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    inset 0 2px 5px 0 rgba(15, 23, 42, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 4px 16px -2px rgba(15, 23, 42, 0.05);
+}
+
+.ios-tab-active {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 250, 252, 0.88) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 6px 20px -2px rgba(15, 23, 42, 0.14),
+    0 2px 6px -1px rgba(15, 23, 42, 0.08),
+    inset 0 1.5px 0 0 #ffffff,
+    inset 0 -1px 0 0 rgba(203, 213, 225, 0.4);
+}
+
+.glass-modal {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 25px 60px -15px rgba(15, 23, 42, 0.22),
+    inset 0 1.5px 0 0 #ffffff;
+}
+
+.glass-panel-subtle {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 4px 16px -2px rgba(17, 24, 39, 0.03),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(203, 213, 225, 0.75);
+  color: #111827;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+}
+
+/* Low-Power & High-FPS Fallbacks for Reduced Transparency or Low-End Hardware */
+@media (prefers-reduced-transparency: reduce) {
+  .glass-panel,
+  .ios-glass-card,
+  .glass-panel-subtle {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .ios-tab-track {
+    background: #e2e8f0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .ios-tab-active {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideDownSubtle {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-modal-in {
+  animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-down {
+  animation: slideDownSubtle 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Short transform/opacity-only entrances avoid layout work and stay inexpensive. */
+@keyframes appScreenEnter {
+  /* Keep the app shell transform-free so nested fixed-position dialogs stay viewport-relative. */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes siteCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes siteDetailEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes loadingSheen {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes loadingOrbit {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.035);
+  }
+}
+
+@keyframes loadingProgress {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(230%);
+  }
+}
+
+.app-screen-enter {
+  animation: appScreenEnter 220ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+}
+
+.dashboard-loading-orbit {
+  position: relative;
+  animation: loadingOrbit 1.8s ease-in-out infinite;
+}
+
+.dashboard-loading-orbit::after {
+  position: absolute;
+  inset: -5px;
+  border: 1px solid rgb(16 185 129 / 22%);
+  border-radius: 1.1rem;
+  content: '';
+  animation: loadingOrbit 1.8s ease-in-out infinite reverse;
+}
+
+.dashboard-skeleton-card {
+  animation: siteCardEnter 320ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+}
+
+.dashboard-skeleton-line {
+  background: linear-gradient(100deg, #e2e8f0 20%, #f8fafc 42%, #e2e8f0 64%);
+  background-size: 220% 100%;
+  animation: loadingSheen 1.5s ease-in-out infinite;
+}
+
+.dashboard-loading-progress {
+  width: 38%;
+  animation: loadingProgress 1.45s ease-in-out infinite;
+}
+
+.site-detail-enter {
+  animation: siteDetailEnter 320ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+}
+
+/* Only the first eight visible cards animate; large tender lists stay inexpensive. */
+.site-list-item-enter:nth-child(-n + 8),
+.motion-cascade
+  > :nth-child(-n + 8):not(.fixed, .sticky, [role='dialog'], video):not(
+    :has([role='dialog'], video, .fixed, .sticky)
+  ) {
+  animation: siteCardEnter 440ms var(--motion-spring) backwards;
+}
+.site-list-item-enter:nth-child(2),
+.motion-cascade > :nth-child(2):not(:has([role='dialog'], video, .fixed, .sticky)) {
+  animation-delay: 35ms;
+}
+.site-list-item-enter:nth-child(3),
+.motion-cascade > :nth-child(3):not(:has([role='dialog'], video, .fixed, .sticky)) {
+  animation-delay: 70ms;
+}
+.site-list-item-enter:nth-child(4),
+.motion-cascade > :nth-child(4):not(:has([role='dialog'], video, .fixed, .sticky)) {
+  animation-delay: 105ms;
+}
+.site-list-item-enter:nth-child(5),
+.motion-cascade > :nth-child(5):not(:has([role='dialog'], video, .fixed, .sticky)) {
+  animation-delay: 140ms;
+}
+.site-list-item-enter:nth-child(6),
+.motion-cascade > :nth-child(6):not(:has([role='dialog'], video, .fixed, .sticky)) {
+  animation-delay: 175ms;
+}
+.site-list-item-enter:nth-child(7),
+.motion-cascade > :nth-child(7):not(:has([role='dialog'], video, .fixed, .sticky)) {
+  animation-delay: 210ms;
+}
+.site-list-item-enter:nth-child(8),
+.motion-cascade > :nth-child(8):not(:has([role='dialog'], video, .fixed, .sticky)) {
+  animation-delay: 245ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-screen-enter,
+  .site-list-item-enter,
+  .site-detail-enter,
+  .dashboard-loading-orbit,
+  .dashboard-loading-orbit::after,
+  .dashboard-skeleton-card,
+  .dashboard-skeleton-line,
+  .dashboard-loading-progress {
+    animation: none !important;
+  }
+
+  .dashboard-loading-progress {
+    width: 100%;
+    transform: none;
+  }
+}
+
+/* Portal-mounted scanner: viewport-relative even inside transformed glass panels.
+   Dynamic height and safe-area padding keep the camera and close button reachable
+   on phones with browser chrome, display cutouts, or a short landscape viewport. */
+.software-qr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
+  padding: 1rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  overflow: hidden;
+  background: rgb(2 6 23 / 0.8);
+}
+
+/* One task per page with normal document scrolling. Only actual modal
+   dialogs lock the page; the installation workspace never locks body/root. */
+.installation-wizard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 85svh;
+  color: #0f172a;
+  background: #fff;
+  border-radius: 16px;
+}
+.wizard-header,
+.wizard-content,
+.wizard-footer {
+  min-width: 0;
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+  padding: 16px 22px;
+}
+.wizard-header {
+  border-bottom: 1px solid #f1f5f9;
+}
+.wizard-content {
+  flex: 1;
+  overflow: visible;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+.wizard-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid #e2e8f0;
+  background: white;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+.wizard-primary,
+.wizard-secondary,
+.wizard-text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.wizard-primary {
+  min-width: 0;
+  flex: 1;
+  background: #1d4ed8;
+  color: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+.wizard-secondary {
+  border: 1px solid #cbd5e1;
+  background: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+.wizard-text-button {
+  min-height: 36px;
+}
+.installation-wizard button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.installation-wizard button:focus-visible,
+.installation-wizard a:focus-visible,
+.installation-wizard summary:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+.wizard-label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+.wizard-label input,
+.wizard-label select,
+.wizard-label textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: white;
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 400;
+}
+.wizard-label input:focus,
+.wizard-label select:focus,
+.wizard-label textarea:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+}
+.wizard-hint {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.65;
+}
+.wizard-choice {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px 16px;
+  text-align: left;
+}
+.wizard-choice > svg {
+  flex-shrink: 0;
+}
+.wizard-choice span {
+  flex: 1;
+}
+.wizard-choice strong {
+  display: block;
+  font-size: 14px;
+}
+.wizard-choice small {
+  display: block;
+  margin-top: 6px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.wizard-choice.is-selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.wizard-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #047857;
+  font-size: 13px;
+  font-weight: 600;
+}
+.wizard-error {
+  border-radius: 10px;
+  padding: 12px;
+  background: #fff1f2;
+  color: #9f1239;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.wizard-disclosure {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 14px;
+  font-size: 12px;
+  color: #475569;
+}
+.wizard-disclosure summary {
+  cursor: pointer;
+  min-height: 32px;
+}
+.wizard-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.wizard-summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid #f1f5f9;
+  padding: 14px 0;
+  font-size: 13px;
+}
+.wizard-summary dt {
+  flex-shrink: 0;
+  color: #64748b;
+}
+.wizard-summary dd {
+  text-align: right;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+.wizard-resource {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 18px 0;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+}
+@media (max-height: 620px) {
+  .wizard-header {
+    padding-block: 8px;
+  }
+  .wizard-content {
+    padding-block: 16px;
+  }
+  .wizard-header > div:nth-child(2) {
+    margin-top: 4px;
+  }
+  .wizard-header > div:nth-child(3) {
+    margin-top: 8px;
+  }
+}
+
+.wizard-stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 12px;
+}
+.wizard-stages li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 10px;
+  font-size: 10px;
+  color: #64748b;
+}
+.wizard-stages li span {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  font-weight: 600;
+}
+.wizard-stages li.is-current {
+  color: #1d4ed8;
+  border-color: #1d4ed8;
+  font-weight: 700;
+}
+.wizard-stages li.is-current span {
+  background: #1d4ed8;
+  color: white;
+}
+.installation-wizard h1 {
+  scroll-margin-top: 20px;
+}
+
+/* Fixed app-open welcome: a cinematic launch stage that never participates in dashboard
+   layout or locks body scroll. Apple HIG light mode — white-to-soft-gray mesh with an airy
+   ambient glow, SF Pro type hierarchy, the wordmark assembling letter by letter, then an
+   emerald bloom, a specular sweep and a drawn accent hairline. Only opacity/transform
+   animate; every timing comes from WELCOME_CHOREOGRAPHY through custom properties. */
+.app-launch-content {
+  min-height: 100svh;
+}
+.app-launch {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  overflow-x: hidden;
+  overflow-y: auto;
+  isolation: isolate;
+  padding: max(28px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right))
+    calc(28px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  background: #fff;
+  color: #1c1c1e;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  opacity: 1;
+  transition: opacity 180ms ease-out;
+}
+.app-launch[data-leaving='true'] {
+  opacity: 0;
+}
+/* Mesh: pure white at the top, #F2F2F7 at the bottom, cool ambient glow in the centre. */
+.app-launch-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 62% 42% at 50% 44%, rgba(255, 255, 255, 0.98) 0%, transparent 72%),
+    radial-gradient(ellipse 78% 52% at 50% 104%, #f2f2f7 0%, rgba(242, 242, 247, 0) 74%),
+    radial-gradient(ellipse 90% 60% at 12% -6%, rgba(255, 255, 255, 0.9) 0%, transparent 68%),
+    radial-gradient(ellipse 64% 44% at 50% 46%, rgba(52, 199, 89, 0.045) 0%, transparent 70%),
+    linear-gradient(180deg, #fff 0%, #fbfbfd 58%, #f2f2f7 100%);
+  animation: launch-stage-in 900ms ease-out both;
+}
+.app-launch-stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(100%, 520px);
+  padding-block: 40px;
+  text-align: center;
+}
+.app-launch-eyebrow {
+  margin: 0 0 14px;
+  color: #8e8e93;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  animation: launch-fade-up 520ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both;
+}
+
+/* Wordmark: the name assembles itself, no monogram. */
+.app-launch-wordmark {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  margin: 0;
+  color: #1c1c1e;
+  font-size: clamp(34px, 11vw, 58px);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.024em;
+  font-kerning: normal;
+  animation: launch-settle var(--launch-finale-duration, 440ms) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--launch-finale-delay, 760ms) both;
+}
+.app-launch-letters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.app-launch-word {
+  /* Inline flow (not flex) keeps glyph baselines and side bearings exactly as typeset. */
+  display: inline-block;
+  white-space: nowrap;
+}
+.app-launch-word[data-word='accent'] {
+  letter-spacing: -0.028em;
+}
+.app-launch-word[data-word='accent'] .app-launch-letter {
+  color: #34c759;
+}
+.app-launch-gap {
+  display: inline-block;
+  width: 0.26em;
+}
+.app-launch-letter {
+  display: inline-block;
+  /* Optical compensation for the kern pairs lost when the name is split into spans. */
+  margin-left: var(--kern, 0em);
+  animation: launch-letter-in var(--launch-letter-duration, 520ms) cubic-bezier(0.16, 1, 0.3, 1)
+    calc(var(--launch-letter-delay, 40ms) + var(--i) * var(--launch-letter-stagger, 22ms)) both;
+}
+.app-launch-bloom {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(520px, 96vw);
+  aspect-ratio: 1 / 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(52, 199, 89, 0.16) 0%,
+    rgba(52, 199, 89, 0.05) 44%,
+    transparent 70%
+  );
+  pointer-events: none;
+  opacity: 0;
+  animation: launch-bloom var(--launch-bloom-duration, 560ms) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--launch-bloom-delay, 700ms) both;
+}
+.app-launch-sheen {
+  position: absolute;
+  inset: -14% -6%;
+  border-radius: 24px;
+  background: linear-gradient(
+    102deg,
+    transparent 36%,
+    rgba(255, 255, 255, 0.72) 50%,
+    transparent 64%
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  opacity: 0;
+  animation: launch-sheen var(--launch-sheen-duration, 400ms) cubic-bezier(0.4, 0, 0.2, 1)
+    var(--launch-sheen-delay, 820ms) both;
+}
+.app-launch-rule {
+  width: min(240px, 62%);
+  height: 2px;
+  margin: 22px 0 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #34c759 46%, #a5e8b8 54%, transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: launch-rule var(--launch-finale-duration, 440ms) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--launch-finale-delay, 760ms) both;
+}
+.app-launch-subtitle {
+  max-width: 26ch;
+  margin: 0;
+  color: #636366;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.47;
+  text-wrap: balance;
+  animation: launch-fade-up 620ms cubic-bezier(0.16, 1, 0.3, 1) 300ms both;
+}
+.app-launch-track {
+  width: 132px;
+  height: 4px;
+  margin-top: 30px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e5ea;
+  animation: launch-fade-in 400ms ease-out 340ms both;
+}
+.app-launch-track span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: #34c759;
+  transform-origin: left center;
+  animation: launch-progress var(--launch-duration, 1320ms) cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.app-launch-footer {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  color: #8e8e93;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+  text-align: center;
+}
+.app-launch-footer p {
+  margin: 0 0 8px;
+  color: #636366;
+  font-size: 13px;
+}
+.app-launch-footer button {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: #fff;
+  color: #007aff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.app-launch-footer button:active {
+  transform: scale(0.98);
+  background: #f2f2f7;
+}
+.app-launch-footer button:focus-visible {
+  outline: 2px solid #34c759;
+  outline-offset: 2px;
+}
+@keyframes launch-stage-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes launch-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes launch-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes launch-letter-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--dx, 0), var(--dy, 0), 0) rotate(var(--rot, 0deg)) scale(0.9);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+}
+@keyframes launch-settle {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes launch-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.74);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0.5;
+    transform: scale(1.08);
+  }
+}
+@keyframes launch-sheen {
+  from {
+    opacity: 0;
+    transform: translateX(-72%);
+  }
+  35% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(72%);
+  }
+}
+@keyframes launch-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes launch-progress {
+  from {
+    transform: scaleX(0.02);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (min-width: 640px) {
+  .app-launch-stage {
+    padding-block: 56px;
+  }
+  .app-launch-wordmark {
+    font-size: clamp(44px, 6vw, 64px);
+  }
+}
+@media (max-height: 560px) {
+  .app-launch-stage {
+    padding-block: 20px;
+  }
+  .app-launch-wordmark {
+    font-size: clamp(28px, 9vw, 44px);
+  }
+  .app-launch-track {
+    margin-top: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-launch,
+  .app-launch * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .app-launch-sheen {
+    display: none;
+  }
+  .app-launch-rule {
+    transform: scaleX(1);
+  }
+  .app-launch-track span {
+    transform: scaleX(1);
+  }
+}
+
+/* Shared motion language: responsive, interruptible and never a loading delay. */
+:root {
+  --motion-fast: 180ms;
+  --motion-normal: 360ms;
+  --motion-sheet: 480ms;
+  --motion-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --motion-spring: var(--motion-ease);
+}
+
+/* Press transforms apply only to controls, never the persistent tab pill.
+   Utility individual-scale is neutralized during a press to avoid double scaling.
+   No width/height/color/shadow transitions or permanent card compositor layers. */
+:where(.motion-app, .motion-dialog-panel) :where(button, a, summary) {
+  -webkit-tap-highlight-color: transparent;
+  transition-property: transform, opacity;
+  transition-duration: var(--motion-fast);
+  transition-timing-function: var(--motion-spring);
+}
+:where(.motion-app, .motion-dialog-panel)
+  :where(button, a, summary):active:not(:disabled):not([aria-disabled='true']):not(
+    :where([data-motion-protected] *, .leaflet-container *)
+  ) {
+  scale: 1;
+  transform: scale(0.96);
+}
+:where(.motion-app, .motion-dialog-panel) :where(input, textarea, select) {
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    opacity var(--motion-fast) var(--motion-ease);
+}
+:where(.motion-app, .motion-dialog-panel) :where(button, a, summary):focus-visible {
+  outline: 2px solid #059669;
+  outline-offset: 3px;
+}
+/* Map controls/dragging retain their library's own interaction geometry. */
+.leaflet-container :where(button, a) {
+  scale: 1 !important;
+}
+
+@keyframes motionBackdropEnter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes motionDialogEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes motionSheetEnter {
+  from {
+    opacity: 0;
+    transform: translateY(calc(100% + 2rem));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.motion-dialog-backdrop {
+  animation: motionBackdropEnter 240ms var(--motion-ease) backwards;
+}
+.motion-popover {
+  transform-origin: 50% 0;
+  animation: motionDialogEnter 560ms var(--motion-spring) backwards;
+}
+.motion-dialog-panel {
+  transform-origin: 50% 75%;
+  animation: motionDialogEnter 560ms var(--motion-spring) backwards;
+}
+@media (max-width: 639px) {
+  .motion-dialog-backdrop:not([data-motion-protected]) {
+    align-items: flex-end;
+  }
+  .motion-dialog-panel {
+    animation-name: motionSheetEnter;
+    animation-timing-function: var(--motion-ease);
+    animation-duration: var(--motion-sheet);
+  }
+}
+/* Reveals are leaves, not page wrappers: fixed dialogs remain viewport-relative. */
+.motion-detail-enter {
+  animation: siteCardEnter 440ms var(--motion-spring) backwards;
+}
+.animate-fade-in {
+  animation-timing-function: var(--motion-ease);
+}
+.animate-modal-in {
+  animation-duration: 260ms;
+  animation-fill-mode: backwards;
+}
+.animate-slide-down {
+  animation-duration: 240ms;
+  animation-fill-mode: backwards;
+}
+
+/* An overlay accent reserves zero layout space. It represents activity, not %.
+   It is absent from accessibility output: existing action/status labels remain. */
+.motion-loading-track {
+  position: absolute;
+  inset: 0 16px auto;
+  height: 2px;
+  margin: 0 !important;
+  overflow: hidden;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+.motion-loading-track[data-active='true'] {
+  opacity: 1;
+}
+.motion-loading-track > span {
+  display: block;
+  height: 100%;
+  width: 36%;
+  background: linear-gradient(90deg, transparent, #059669, #6ee7b7, transparent);
+  animation: loadingProgress 1.6s ease-in-out infinite;
+}
+.motion-skeleton {
+  position: relative;
+  overflow: hidden;
+}
+.motion-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 25%, rgb(255 255 255 / 55%) 50%, transparent 75%);
+  animation: motionSkeletonSheen 1.8s ease-in-out infinite;
+}
+@keyframes motionSkeletonSheen {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+.motion-app :where([role='alert'], .wizard-success, .wizard-error) {
+  animation: motionBackdropEnter 180ms ease-out backwards;
+}
+/* Sampled stiffness 380 / damping 30 / mass 0.8, with a deceleration fallback. */
+@supports (animation-timing-function: linear(0, 1)) {
+  :root {
+    --motion-spring: linear(
+      0,
+      0.04978,
+      0.16312,
+      0.30107,
+      0.44006,
+      0.56702,
+      0.67589,
+      0.76498,
+      0.83515,
+      0.88858,
+      0.92799,
+      0.95614,
+      0.97556,
+      0.98843,
+      0.99654,
+      1.0013,
+      1.0038,
+      1.00483,
+      1.00495,
+      1.00457,
+      1.00395,
+      1.00325,
+      1.00257,
+      1.00197,
+      1.00146,
+      1.00105,
+      1.00073,
+      1.00048,
+      1.00031,
+      1.00018,
+      1.0001,
+      1.00004,
+      1.00001,
+      0.99999,
+      0.99998,
+      1
+    );
+  }
+}
+.motion-tab-track {
+  position: relative;
+  isolation: isolate;
+}
+.motion-tab-track > button {
+  position: relative;
+  z-index: 1;
+}
+.motion-measured-pill {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: 0 0;
+  opacity: 0;
+}
+[data-motion-surface] {
+  transform-origin: 50% 0;
+  transition:
+    transform var(--motion-sheet) var(--motion-ease),
+    opacity var(--motion-sheet) var(--motion-ease);
+}
+@media (max-width: 639px) and (prefers-reduced-motion: no-preference) {
+  /* Never scale the shell: viewport-fixed portals/overlays must keep their geometry.
+     Only audited, overlay-free content participates in background sheet depth. */
+  body:has(.motion-dialog-backdrop:not([data-motion-protected])):not(:has([data-motion-protected]))
+    [data-motion-surface]:not(:has(.fixed, .sticky, [role='dialog'], [aria-modal='true'], video)) {
+    transform: translate3d(-6px, 0, 0) scale(0.97);
+    opacity: 0.88;
+  }
+}
+/* Protected biometric/camera/scanner entries retain the earlier visual treatment.
+   No sheet depth, new press scaling or new animation is applied to their contents. */
+[data-motion-protected] {
+  --motion-fast: 140ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-spring: var(--motion-ease);
+}
+[data-motion-protected] .motion-dialog-panel {
+  animation: motionProtectedEnter 320ms var(--motion-ease) backwards;
+}
+@keyframes motionProtectedEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (max-width: 639px) {
+  [data-motion-protected] .motion-dialog-panel {
+    animation: motionProtectedSheetEnter 360ms var(--motion-ease) backwards;
+  }
+}
+@keyframes motionProtectedSheetEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+[data-motion-protected] :where(button, a, summary):active:not(:disabled) {
+  scale: 0.985;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  [data-motion-protected] :where(button, a, summary):active,
+  :where(.motion-app, .motion-dialog-panel) :where(button, a, summary):active {
+    scale: 1 !important;
+    transform: none !important;
+  }
+  .motion-loading-track > span {
+    width: 100%;
+    opacity: 0.65;
+  }
+  .motion-skeleton::after {
+    display: none;
+  }
+}
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .motion-loading-track {
+    display: none;
+  }
+  [data-motion-surface] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Absolute loading decoration must not become the first spaced content row. */
+.motion-loading-track + * {
+  margin-block-start: 0 !important;
+}

@@ -1,0 +1,41 @@
+/* A solid sheet over a static dimmer: no full-viewport backdrop sampling or
+   background scaling for this popup. Keep the established sheet/spring entry. */
+.technician-profile-overlay {
+  isolation: isolate;
+}
+/* Do not use motion-dialog-backdrop here: that shared class enables both a
+   live blur and the page-depth transform. Reuse only its entrance keyframes. */
+.technician-profile-scrim {
+  background: rgb(29 29 31 / 48%);
+  animation: motionBackdropEnter 240ms var(--motion-ease) backwards;
+}
+:root .technician-profile-panel {
+  background: #fff;
+  box-shadow: 0 12px 36px rgb(15 23 42 / 12%);
+}
+.technician-profile-header {
+  background: #fafafa;
+}
+.technician-profile-overlay > .technician-profile-panel {
+  z-index: 1;
+  min-height: 0;
+  max-height: 95vh;
+  max-height: 95dvh;
+}
+.technician-profile-body {
+  min-height: 0;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+@media (min-width: 640px) {
+  .technician-profile-overlay > .technician-profile-panel {
+    max-height: 90vh;
+    max-height: 90dvh;
+  }
+}
+@media print {
+  .technician-profile-scrim {
+    display: none;
+  }
+}
